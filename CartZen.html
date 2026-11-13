@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CartZen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#fff;--surface:#fff;--text:#2b2b2b;--muted:#6b6b6b;--line:#e8e8e8;--dark:#2b2b2b;--accent:#f26b21;--thumb:#fbefc7;--ok:#1f8a4c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171717;--surface:#222;--text:#f1f1f1;--muted:#a8a8a8;--line:#363636;--dark:#0f0f0f;--thumb:#3a321a}}
+:root[data-theme="dark"]{--bg:#171717;--surface:#222;--text:#f1f1f1;--muted:#a8a8a8;--line:#363636;--dark:#0f0f0f;--thumb:#3a321a}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-size:17px;font-family:Poppins,system-ui,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button{font:inherit;cursor:pointer}a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.top{background:var(--dark);color:#fff;display:flex;justify-content:center;gap:20px;padding:12px 14px;font-size:15px;flex-wrap:wrap}
+.head{background:#e3ab1c;padding:16px 5vw 22px;text-align:center;color:#fff}
+.head.hero{background:linear-gradient(#e3ab1c,#f0c24a 70%,var(--bg));padding-bottom:80px}
+.head h1{font-size:clamp(34px,6vw,68px);line-height:1.15;margin:84px 0 28px;text-transform:uppercase}
+.logo{font-size:40px;font-weight:700;margin:6px 0 18px;cursor:pointer}
+.bar{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:1300px;margin:0 auto}
+input,select,textarea{padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--text);font:inherit;max-width:100%}
+.chip,.btn{display:inline-block;border:0;border-radius:4px;padding:12px 20px;background:var(--dark);color:#fff;font-weight:500;text-decoration:none}
+.btn.pri{background:var(--accent)}.chip.on{outline:2px solid var(--accent)}.chip.del{background:#c0392b}
+button:disabled{opacity:.5;cursor:not-allowed}
+main{max-width:1380px;margin:0 auto;padding:24px 5vw 50px;min-height:50vh}
+main.pull{margin-top:-46px}
+h2{font-size:34px}.center{text-align:center}
+.filters{display:flex;gap:8px;justify-content:center;margin-bottom:22px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:28px}
+.card{background:var(--surface);border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.1);padding:22px;;display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.card.left{text-align:left}
+.thumb{height:250px;border-radius:4px;display:grid;place-items:center;font-size:64px;background:var(--thumb)}
+.price{color:var(--accent);font-size:18px}.muted{color:var(--muted);font-size:15px}
+.stack{display:grid;gap:12px;max-width:560px}
+.box{max-width:480px;margin:20px auto;background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:6px;padding:24px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px}.stat b{display:block;font-size:24px}.stat span{font-size:13px;color:var(--muted)}
+.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:16px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.badge{padding:3px 9px;border-radius:99px;font-size:12px;background:var(--thumb);color:#7a5b00}
+.badge.Shipped,.badge.Delivered{background:#d9f0e2;color:var(--ok)}.badge.Cancelled{background:#f6d9d5;color:#a93226}.badge.Processing{background:#dbe8fb;color:#1d4ed8}
+.error{color:#c0392b}.empty{text-align:center;color:var(--muted);padding:26px}
+.foot{text-align:center;color:var(--muted);font-size:13px;padding:22px;border-top:1px solid var(--line)}
+.detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:44px;align-items:start}.thumb.big{height:480px;font-size:110px}.thumb{overflow:hidden}.thumb img{width:100%;height:100%;object-fit:contain}.mini{width:44px;height:44px;object-fit:contain;border-radius:4px;display:block}.preview{max-width:160px;border-radius:4px}label{display:grid;gap:4px;font-size:14px}label.check{display:flex;align-items:center;gap:8px}
+.sw{width:42px;height:42px;border-radius:50%;border:2px solid var(--line);padding:0}.sw.on{outline:3px solid var(--accent);outline-offset:2px}.dot{width:14px;height:14px;border-radius:50%;border:1px solid var(--line);display:inline-block}.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tb{width:84px;height:84px;padding:0;border:2px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface)}.tb.on{outline:3px solid var(--accent);outline-offset:2px}.tb img{width:100%;height:100%;object-fit:contain;display:block}
+.slider{position:relative;overflow:hidden;border-radius:6px;background:var(--thumb);touch-action:pan-y}.track{display:flex;transition:transform .35s ease}.slide{min-width:100%;height:500px}.slide img{width:100%;height:100%;object-fit:contain;display:block}.nav{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:0;background:rgba(0,0,0,.55);color:#fff;font-size:22px;line-height:1}.nav.prev{left:8px}.nav.next{right:8px}@media (prefers-reduced-motion:reduce){.track{transition:none}}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;list-style:none;padding:0;margin:16px 0;counter-reset:st}
+.steps li{counter-increment:st;text-align:center;padding:12px 4px;border-radius:6px;border:2px solid var(--line);background:var(--surface);color:var(--muted);font-size:15px;font-weight:500}
+.steps li::before{content:counter(st);display:block;width:30px;height:30px;line-height:26px;margin:0 auto 6px;border-radius:50%;border:2px solid var(--line);font-weight:600}
+.steps li.done{border-color:var(--ok);color:var(--ok)}
+.steps li.done::before{content:"\2713";background:var(--ok);border-color:var(--ok);color:#fff}
+.steps li.now{background:var(--ok);border-color:var(--ok);color:#fff;font-weight:700}
+.steps li.now::before{content:counter(st);background:#fff;border-color:#fff;color:var(--ok)}
+.legend{margin:6px 0 0;padding-left:20px;color:var(--muted);font-size:15px;line-height:1.7}
+.wa{position:fixed;right:16px;bottom:calc(18px + env(safe-area-inset-bottom,0px));background:#25D366;color:#000;font-weight:600;text-decoration:none;padding:12px 18px;border-radius:99px;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:25}
+.wa{border:0}.wabox{position:fixed;right:16px;bottom:calc(76px + env(safe-area-inset-bottom,0px));width:min(330px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;box-shadow:0 8px 28px rgba(0,0,0,.3);z-index:26;display:grid;gap:8px}.wabox[hidden]{display:none}
+.thanks{text-align:center;max-width:720px;margin:0 auto}.thanks .check{width:84px;height:84px;line-height:84px;border-radius:50%;background:var(--ok);color:#fff;font-size:46px;margin:10px auto 6px}.wanote{border:2px solid #25D366;border-radius:8px;padding:18px;margin:18px auto;max-width:560px;background:var(--surface)}.thanks .steps{max-width:560px;margin:16px auto}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:grid;place-items:center;z-index:40}.modal[hidden]{display:none}.mbox{background:var(--surface);color:var(--text);padding:22px;border-radius:8px;max-width:420px;width:calc(100% - 32px);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.hs{position:relative;overflow:hidden;border-radius:10px;max-width:1300px;margin:0 auto}
+.htrack{display:flex;transition:transform .6s ease}
+.hslide{min-width:100%;min-height:340px;padding:40px 64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background-size:cover;background-position:center;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+.hslide h1{margin:0}.hslide p{font-size:20px;margin:0;max-width:640px}
+.hnav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:24px;line-height:1;text-shadow:none}
+.hprev{left:10px}.hnext{right:10px}.hpl{top:14px;right:10px;transform:none;width:36px;height:36px;font-size:13px}
+.hdots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:8px}
+.hdot{width:12px;height:12px;border-radius:50%;border:0;background:rgba(255,255,255,.55);padding:0}.hdot.on{background:#fff;outline:2px solid rgba(0,0,0,.35)}
+@media (prefers-reduced-motion:reduce){.htrack{transition:none}}
+.posters{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px;margin:0 0 40px}
+.poster{padding:0;border:0;border-radius:10px;overflow:hidden;background:none;display:block;box-shadow:0 6px 24px rgba(0,0,0,.18);transition:transform .2s}
+.poster:hover,.poster:focus-visible{transform:translateY(-4px)}.poster svg{display:block;width:100%;height:auto}
+@media (prefers-reduced-motion:reduce){.poster{transition:none}}
+.hslide{position:relative;overflow:hidden;align-items:flex-start;text-align:left;padding:48px 64px;min-height:380px}
+.hslide .hart{position:absolute;right:0;top:0;height:100%;width:58%;pointer-events:none}
+.hslide>*:not(.hart){position:relative;z-index:1;max-width:min(560px,100%)}
+.hslide h1{font-size:clamp(30px,4.6vw,56px)}
+.hslide .chip{background:#fff;color:#2b2b2b;font-weight:600;padding:14px 26px;border-radius:99px}
+.hslide.dk{color:#2b2b2b;text-shadow:none}.hslide.dk .chip{background:#2b2b2b;color:#fff}
+@media (max-width:700px){.hslide{padding:34px 22px;align-items:center;text-align:center}.hslide .hart{width:100%;opacity:.3}}
+.top a,.top button{color:#fff;background:none;border:0;font:inherit;text-decoration:none;padding:4px 10px;border-radius:4px;cursor:pointer}
+.top a:hover,.top button:hover{text-decoration:underline}.top .on{background:rgba(255,255,255,.18);font-weight:600}
+details{border:1px solid var(--line);border-radius:6px;padding:12px 16px;background:var(--surface)}summary{cursor:pointer;font-weight:600}details p{margin:10px 0 0}
+.lead{font-size:20px;max-width:760px;line-height:1.6}.about ol{max-width:760px;line-height:1.9;padding-left:22px}
+.notice{background:#ffe08a;color:#3b2f00;text-align:center;padding:10px 14px;font-weight:500}.dim{opacity:.55}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 18px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:30}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<nav class="top" id="top" aria-label="Quick links"></nav>
+<div class="notice" id="notice" hidden></div>
+<header class="head" id="head"></header>
+<main id="main"></main>
+<footer class="foot">© <span id="fname">CartZen</span>. Payment on delivery. <a href="#about">About</a> · <a href="#adminlogin" id="adminLink">Admin login</a></footer>
+<button class="wa" id="waBtn" data-a="wabox" hidden>Chat on WhatsApp</button>
+<div class="wabox" id="waBox" hidden></div>
+<div class="modal" id="dlg" hidden role="dialog" aria-modal="true" aria-labelledby="dlgMsg"><div class="mbox"><p id="dlgMsg" style="margin-top:0"></p><div class="row" style="justify-content:flex-end"><button class="chip" id="dlgNo">Keep it</button><button class="chip del" id="dlgYes">Yes, continue</button></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=n=>(cfg().currency||'$')+Number(n).toFixed(2);
+const STATUSES=['Pending','Processing','Shipped','Delivered','Cancelled'];
+const EMO={Men:'👕',Women:'👗',Accessories:'👜'};
+const seed=()=>({adminEmail:'admin@eflyer.com',adminHash:null,wa:'',nextP:7,nextO:1001,orders:[],products:[
+ {id:1,name:'Men T-shirt',cat:'Men',price:30,stock:24},{id:2,name:'Men shirt',cat:'Men',price:30,stock:18},
+ {id:3,name:'Women scarf',cat:'Women',price:30,stock:30},{id:4,name:'Summer dress',cat:'Women',price:48,stock:12},
+ {id:5,name:'Leather clutch',cat:'Accessories',price:55,stock:8},{id:6,name:'Gold bracelet',cat:'Accessories',price:22,stock:15}]});
+let S=seed(),dbDoc=null,cart={},adminOK=false,tab='dash',cat='All',q='',lastOrder=null,msg='',editId=null,detailId=null,detailColor='',detailMain=true,slideIdx=0,trackQ=null,heroIdx=0,heroHold=false,heroPause=false,coll=null,ordFilter='All',ordQ='',prodQ='';
+
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.i);toast.i=setTimeout(()=>t.classList.remove('show'),2200)}
+async function save(){
+  try{ if(dbDoc) await dbDoc.set({json:JSON.stringify(S)}); else localStorage.setItem('eflyer-state',JSON.stringify(S)); }
+  catch(e){ toast('Could not save to the shop. If you added photos, try smaller ones.'); return false }
+  return true
+}
+const view=()=>{const h=location.hash.slice(1);return ['shop','cart','track','adminlogin','admin','product','thankyou','help','about','login','register','account'].includes(h)?h:'shop'};
+const go=v=>{location.hash=v};
+
+function render(){
+  let v=view(); if(v==='admin'&&!adminOK) v='adminlogin';
+  const hero=v==='shop';
+  const h=$('#head'); h.className='head'+(hero?' hero':'');
+  const n=Object.values(cart).reduce((a,b)=>a+b,0);
+  h.innerHTML=`<div class="logo" onclick="go('shop')">${esc(cfg().name)}</div><nav class="bar">
+    <button class="chip ${v==='shop'&&!coll?'on':''}" data-a="coll" data-v="">Shop</button>
+    <a class="chip ${v==='cart'?'on':''}" href="#cart">Cart (${n})</a>
+    <a class="chip ${v==='track'?'on':''}" href="#track">Track order</a>
+    ${adminOK?`<a class="chip ${v==='admin'?'on':''}" href="#admin">Admin panel</a><button class="chip" data-a="logout">Log out</button>`:cust?`<a class="chip ${v==='account'?'on':''}" href="#account">Hi, ${esc(cust.name.split(' ')[0])}</a><button class="chip" data-a="logout">Log out</button>`:`<a class="chip ${v==='login'||v==='register'?'on':''}" href="#login">Customer login</a><a class="chip ${v==='adminlogin'?'on':''}" href="#adminlogin">Admin login</a>`}</nav>
+    ${hero?heroHtml():''}`;
+  const m=$('#main'); m.className=hero?'pull':'';
+  m.innerHTML=({shop:vShop,cart:vCart,track:vTrack,product:vProduct,thankyou:vThanks,help:vHelp,about:vAbout,login:vLogin,register:vRegister,account:vAccount,adminlogin:vAdminLogin,admin:vAdmin})[v]();
+  $('#adminLink').hidden=adminOK;
+  {const c=cfg();document.title=c.name;const fn=$('#fname');if(fn)fn.textContent=c.name;const nt=$('#notice');nt.hidden=!c.notice;nt.textContent=c.notice}
+  $('#top').innerHTML=[['best','Best Sellers'],['gift','Gift Ideas'],['new','New Releases'],['deals','Today’s Deals']].map(([k,t])=>`<button data-a="coll" data-v="${k}" ${v==='shop'&&coll===k?'class="on" aria-current="true"':''}>${t}</button>`).join('')+`<a href="#help" ${v==='help'?'class="on" aria-current="page"':''}>Customer Service</a>`+`<a href="#about" ${v==='about'?'class="on" aria-current="page"':''}>About CartZen</a>`;
+  {const wb=$('#waBtn');wb.hidden=!waNum()||adminOK;if(wb.hidden)$('#waBox').hidden=true}
+}
+
+/* ---------- Customer panel ---------- */
+const cfg=()=>Object.assign({name:'CartZen',currency:'$',delivery:0,freeOver:0,lowStock:5,notice:'',address:'',hours:''},S.cfg||{});
+const lowLimit=()=>Math.max(0,+cfg().lowStock||0);
+const subOf=L=>L.reduce((t,l)=>t+l.p.price*l.qty,0);
+const feeFor=sub=>{const c=cfg();return(+c.delivery>0&&!(+c.freeOver>0&&sub>=+c.freeOver))?+c.delivery:0};
+const soldOf=id=>S.orders.filter(o=>o.status!=='Cancelled').reduce((t,o)=>t+o.items.filter(i=>i.id===id).reduce((a,i)=>a+i.qty,0),0);
+function vShop(){
+  const cats=['All',...new Set(S.products.map(p=>p.cat))];
+  const base=S.products.filter(p=>!p.hidden&&(cat==='All'||p.cat===cat)&&p.name.toLowerCase().includes(q.toLowerCase()));
+  let list=base,title='Our Fashion Collection';
+  if(coll==='best'){list=[...base].sort((a,b)=>soldOf(b.id)-soldOf(a.id)||a.id-b.id);title='Best Sellers'}
+  if(coll==='new'){list=[...base].sort((a,b)=>b.id-a.id).slice(0,8);title='New Releases'}
+  if(coll==='gift'){list=base.filter(p=>p.gift);title='Gift Ideas'}
+  if(coll==='deals'){list=base.filter(p=>p.deal);title='Today’s Deals'}
+  return `<h2 class="center">Featured</h2><div class="posters">${POSTERS.map(posterBtn).join('')}</div>
+  <h2 id="products" class="center">${esc(title)}</h2>${coll?`<p class="center"><button class="chip" data-a="coll" data-v="">Show all products</button></p>`:''}
+  <div class="filters"><input id="q" type="search" placeholder="Search products" value="${esc(q)}" aria-label="Search products">
+  ${cats.map(c=>`<button class="chip ${c===cat?'on':''}" data-a="cat" data-v="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+  <div class="grid">${list.map(p=>`<div class="card"><div class="thumb" data-a="open" data-v="${p.id}" role="button" tabindex="0" aria-label="View details of ${esc(p.name)}" style="cursor:pointer">${(p.img||((p.colors||[]).find(c=>c.img)||{}).img)?`<img src="${esc(p.img||((p.colors||[]).find(c=>c.img)||{}).img)}" alt="${esc(p.name)}" loading="lazy">`:`<span aria-hidden="true">${EMO[p.cat]||'🛍️'}</span>`}</div><b data-a="open" data-v="${p.id}" style="cursor:pointer">${esc(p.name)}</b>${p.desc?`<div class="muted clamp">${esc(p.desc)}</div>`:''}
+   <div class="price"><span class="muted">Price</span> ${money(p.price)}</div><div class="muted">${p.stock>0?p.stock+' in stock':'Sold out'}</div>
+   ${(p.colors||[]).length?`<div class="row" style="justify-content:center">${p.colors.slice(0,8).map(c=>`<span class="dot" style="background:${esc(c.hex||'#ccc')}" title="${esc(c.name)}"></span>`).join('')}</div>`:''}<button class="chip" data-a="open" data-v="${p.id}">View details</button><button class="btn pri" data-a="${(p.colors||[]).length?'open':'add'}" data-v="${p.id}" ${p.stock<1?'disabled':''}>${(p.colors||[]).length?'Choose color':'Add to cart'}</button></div>`).join('')}</div>
+  ${list.length?'':`<p class="empty">${coll==='gift'?'No gift ideas picked yet. Check back soon.':coll==='deals'?'No deals today. Check back soon.':'No products match your search.'}</p>`}`;
+}
+// Shop WhatsApp number: set it under Admin > Settings, or type it here as a default for every visitor, e.g. '8801712345678'
+const WA_FIXED='8801850692597';
+const normWa=d=>{d=String(d||'').replace(/\D/g,'');if(/^0\d{10}$/.test(d))return '880'+d.slice(1);if(/^1\d{9}$/.test(d))return '880'+d;return d};
+const waNum=()=>normWa(S.wa||WA_FIXED);
+const waLink=t=>'https://wa.me/'+waNum()+'?text='+encodeURIComponent(t);
+const orderText=o=>['New order #'+o.id+' - '+cfg().name,'Name: '+o.name,'Phone: '+o.phone,'Address: '+o.addr,'Items:',...o.items.map(i=>'- '+i.name+(i.color?' ('+i.color+')':'')+' x'+i.qty+' = '+money(i.price*i.qty)),'Total: '+money(o.total)+(o.delivery?' (incl. '+money(o.delivery)+' delivery)':'')+' (cash on delivery)',...(o.notes?['Notes: '+o.notes]:[])].join('\n');
+const waBoxHtml=t=>`<b>Chat with us on WhatsApp</b><div class="muted">Our number: +${esc(waNum())}</div>
+<a class="btn" style="background:#25D366;color:#000;text-align:center" href="${esc(waLink(t))}" target="_blank" rel="noopener">Open WhatsApp</a>
+
+<button class="chip" data-a="copynum">Copy number</button>
+<p class="muted" style="margin:0">If a link shows “blocked”, copy the number and message us in WhatsApp directly.</p>`;
+function ask(msg,yes,no){
+  return new Promise(res=>{
+    const d=$('#dlg'),Y=$('#dlgYes'),N=$('#dlgNo');
+    $('#dlgMsg').textContent=msg;Y.textContent=yes||'Yes, continue';N.textContent=no||'Keep it';d.hidden=false;N.focus();
+    const done=v=>{d.hidden=true;Y.onclick=null;N.onclick=null;res(v)};
+    Y.onclick=()=>done(true);N.onclick=()=>done(false);
+  });
+}
+async function copyText(t){
+  try{await navigator.clipboard.writeText(t);return true}catch(e){}
+  try{const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();return ok}catch(e){return false}
+}
+const inCartTotal=id=>Object.entries(cart).filter(([k])=>k.split('|')[0]==id).reduce((t,[,n])=>t+n,0);
+function cartLines(){
+  const L=[],used={};
+  for(const [k,qty] of Object.entries(cart)){
+    const [id,color]=k.split('|'),p=S.products.find(x=>x.id==id); if(!p)continue;
+    const c=color?(p.colors||[]).find(x=>x.name===color):null; if(color&&!c)continue;
+    const q=Math.min(qty,p.stock-(used[p.id]||0)); if(q<1)continue;
+    used[p.id]=(used[p.id]||0)+q; L.push({key:k,p,c,qty:q});
+  }
+  return L;
+}
+const POSTERS=[
+ {k:'JUST IN',t:['NEW','ARRIVALS'],fs:56,s:'Fresh styles for everyone',a:'#e3ab1c',b:'#f26b21',fg:'#2b2b2b',bt:'#ffffff',btn:'Shop now',e:'✨',cat:''},
+ {k:'FOR HIM',t:['MEN’S','FASHION'],fs:60,s:'T-shirts, shirts & more',a:'#0f2a4a',b:'#1d6f8f',fg:'#ffffff',bt:'#0f2a4a',btn:'Shop men',e:'👕',cat:'Men'},
+ {k:'FOR HER',t:['WOMEN’S','FASHION'],fs:54,s:'Dresses, scarves & more',a:'#9d174d',b:'#db2777',fg:'#ffffff',bt:'#9d174d',btn:'Shop women',e:'👗',cat:'Women'},
+ {k:'COMPLETE THE LOOK',t:['STYLE','EXTRAS'],fs:66,s:'Bags, jewelry & more',a:'#4c1d95',b:'#7c3aed',fg:'#ffffff',bt:'#4c1d95',btn:'Shop now',e:'👜',cat:'Accessories'},
+ {k:'EASY PAYMENT',t:['PAY ON','DELIVERY'],fs:56,s:'Pay when your order arrives',a:'#14532d',b:'#15803d',fg:'#ffffff',bt:'#14532d',btn:'Order now',e:'🚚',cat:''},
+ {k:'MAKE THEM SMILE',t:['GIFT','IDEAS'],fs:68,s:'Something for everyone',a:'#991b1b',b:'#ea580c',fg:'#ffffff',bt:'#991b1b',btn:'Find a gift',e:'🎁',cat:''}];
+function posterSvg(p,n){
+  const f='font-family="Poppins,Arial,sans-serif"',y0=170+p.t.length*74-4;
+  return `<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(p.t.join(' '))}: ${esc(p.s)}">
+  <defs><linearGradient id="pg${n}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${p.a}"/><stop offset="1" stop-color="${p.b}"/></linearGradient></defs>
+  <rect width="400" height="500" fill="url(#pg${n})"/>
+  <circle cx="340" cy="90" r="130" fill="#fff" opacity=".12"/><circle cx="40" cy="480" r="150" fill="#fff" opacity=".1"/>
+  <path d="M0 350 L400 280 L400 322 L0 392Z" fill="#fff" opacity=".12"/>
+  <text x="32" y="80" font-size="20" font-weight="600" letter-spacing="3" fill="${p.fg}" ${f}>${esc(p.k)}</text>
+  ${p.t.map((l,i)=>`<text x="32" y="${170+i*74}" font-size="${p.fs}" font-weight="800" fill="${p.fg}" ${f}>${esc(l)}</text>`).join('')}
+  <text x="32" y="${y0+14}" font-size="21" fill="${p.fg}" ${f}>${esc(p.s)}</text>
+  <rect x="32" y="410" width="176" height="50" rx="25" fill="${p.fg}"/>
+  <text x="120" y="442" text-anchor="middle" font-size="19" font-weight="700" fill="${p.bt}" ${f}>${esc(p.btn)}</text>
+  <text x="330" y="450" text-anchor="middle" font-size="84">${p.e}</text></svg>`;
+}
+const posterBtn=(p,n)=>`<button class="poster" data-a="poster" data-v="${esc(p.cat)}" aria-label="${esc(p.t.join(' '))}. ${esc(p.btn)}">${posterSvg(p,n)}</button>`;
+const DEF_BANNERS=[
+ {title:'Start your favorite shopping',sub:'Men & women fashion, delivered to your door.',cta:'Shop now',art:'bags',dk:true,bg:'linear-gradient(120deg,#f8c94a,#f2a413)'},
+ {title:'New arrivals are here',sub:'Fresh styles in every color.',cta:'See what’s new',art:'tag',bg:'linear-gradient(120deg,#6d28d9,#db2777)'},
+ {title:'Gift ideas for everyone',sub:'Pay on delivery. Easy order tracking.',cta:'Find a gift',art:'gift',bg:'linear-gradient(120deg,#115e59,#0d9488)'},
+ {title:'Everything you need, one cart away',sub:'Browse, add to cart and order in minutes.',cta:'Start shopping',art:'cart',bg:'linear-gradient(120deg,#1e3a8a,#2563eb)'}];
+function heroArt(kind,dk){
+  const P=dk?['#2b2b2b','#ffffff','#ea580c']:['#ffffff','#ffd34d','#ff6b9d'],ink=dk?'#2b2b2b':'#ffffff';
+  const spark=(x,y,t)=>`<path d="M${x} ${y-t}L${x+t/3} ${y-t/3}L${x+t} ${y}L${x+t/3} ${y+t/3}L${x} ${y+t}L${x-t/3} ${y+t/3}L${x-t} ${y}L${x-t/3} ${y-t/3}Z" fill="${ink}" opacity=".8"/>`;
+  const bag=(x,y,w,h,c,r)=>`<g transform="rotate(${r} ${x+w/2} ${y+h})"><path d="M${x+w*.3} ${y} C${x+w*.3} ${y-h*.3} ${x+w*.7} ${y-h*.3} ${x+w*.7} ${y}" fill="none" stroke="${c}" stroke-width="8" stroke-linecap="round"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${c}"/><rect x="${x}" y="${y+h*.22}" width="${w}" height="6" fill="#000" opacity=".12"/><circle cx="${x+w*.3}" cy="${y+12}" r="4" fill="#000" opacity=".25"/><circle cx="${x+w*.7}" cy="${y+12}" r="4" fill="#000" opacity=".25"/></g>`;
+  const base=`<circle cx="470" cy="130" r="150" fill="#fff" opacity=".13"/><circle cx="560" cy="350" r="110" fill="#fff" opacity=".1"/><circle cx="90" cy="330" r="60" fill="#fff" opacity=".08"/>${spark(120,70,16)}${spark(545,60,12)}${spark(80,230,10)}${spark(565,250,14)}<ellipse cx="330" cy="356" rx="210" ry="14" fill="#000" opacity=".15"/>`;
+  let art='';
+  if(kind==='bags') art=bag(150,175,120,165,P[0],-6)+bag(270,130,140,210,P[1],0)+bag(405,190,115,150,P[2],7);
+  if(kind==='gift') art=`<g><rect x="120" y="278" width="96" height="62" rx="6" fill="${P[2]}"/><rect x="112" y="258" width="112" height="28" rx="6" fill="${P[1]}"/><rect x="156" y="258" width="20" height="82" fill="${P[0]}"/></g>
+    <rect x="235" y="225" width="180" height="115" rx="8" fill="${P[0]}"/><rect x="220" y="192" width="210" height="42" rx="8" fill="${P[1]}"/><rect x="313" y="192" width="26" height="148" fill="${P[2]}"/>
+    <path d="M326 192 C270 120 215 170 326 192Z" fill="${P[2]}"/><path d="M326 192 C382 120 437 170 326 192Z" fill="${P[2]}"/><circle cx="326" cy="192" r="13" fill="${P[2]}"/>`;
+  if(kind==='tag') art=`<g transform="rotate(-12 300 220)"><path d="M150 60 C120 110 150 170 205 200" fill="none" stroke="${ink}" stroke-width="5" stroke-linecap="round"/><path d="M210 110 H430 Q450 110 450 130 V310 Q450 330 430 330 H210 L130 220 Z" fill="${dk?'#2b2b2b':'#ffffff'}"/><circle cx="208" cy="220" r="15" fill="#000" opacity=".28"/><text x="335" y="250" text-anchor="middle" font-size="92" font-weight="800" fill="${dk?'#ffd34d':'#db2777'}" font-family="Poppins,Arial,sans-serif">NEW</text></g>`;
+  if(kind==='cart') art=`<g transform="translate(70 20)"><path d="M60 90 H110 L160 270 H400 L440 140 H130" fill="none" stroke="${ink}" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M135 150 H430 L398 255 H162 Z" fill="#fff" opacity=".25"/><rect x="190" y="88" width="70" height="62" rx="8" fill="#ffd34d"/><rect x="275" y="66" width="60" height="84" rx="8" fill="#ff6b9d"/><rect x="345" y="100" width="55" height="50" rx="8" fill="#fff"/><circle cx="205" cy="315" r="26" fill="${ink}"/><circle cx="205" cy="315" r="9" fill="#000" opacity=".3"/><circle cx="365" cy="315" r="26" fill="${ink}"/><circle cx="365" cy="315" r="9" fill="#000" opacity=".3"/></g>`;
+  return `<svg class="hart" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMid meet" aria-hidden="true" focusable="false">${base}${art}</svg>`;
+}
+const banners=()=>(S.banners&&S.banners.length)?S.banners:DEF_BANNERS;
+function heroHtml(){
+  const B=banners();if(heroIdx>=B.length)heroIdx=0;
+  return `<div class="hs" id="hs" role="region" aria-roledescription="carousel" aria-label="Featured offers"><div class="htrack" id="htrack" style="transform:translateX(-${heroIdx*100}%)">
+  ${B.map((b,i)=>`<div class="hslide${b.dk?' dk':''}" aria-hidden="${i!==heroIdx}" style="${b.img?`background-image:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)),url('${esc(b.img)}')`:(b.bg?`background:${b.bg}`:'')}">${b.art?heroArt(b.art,b.dk):''}<h1>${esc(b.title)}</h1>${b.sub?`<p>${esc(b.sub)}</p>`:''}<a class="chip" href="#products">${esc(b.cta||'Shop now')}</a></div>`).join('')}</div>
+  ${B.length>1?`<button class="hnav hprev" data-a="hprev" aria-label="Previous slide">‹</button><button class="hnav hnext" data-a="hnext" aria-label="Next slide">›</button><button class="hnav hpl" data-a="hplay" aria-label="${heroHold?'Play slideshow':'Pause slideshow'}">${heroHold?'▶':'❚❚'}</button><div class="hdots">${B.map((_,i)=>`<button class="hdot ${i===heroIdx?'on':''}" data-a="hgo" data-v="${i}" aria-label="Go to slide ${i+1}"></button>`).join('')}</div>`:''}</div>`;
+}
+function goHero(i){
+  const n=banners().length;heroIdx=(i+n)%n;
+  const t=$('#htrack');if(t)t.style.transform='translateX(-'+heroIdx*100+'%)';
+  document.querySelectorAll('.hdot').forEach((d,k)=>d.classList.toggle('on',k===heroIdx));
+  document.querySelectorAll('.hslide').forEach((d,k)=>d.setAttribute('aria-hidden',k!==heroIdx));
+}
+function vDash(nav){
+  const O=S.orders,live=O.filter(o=>o.status!=='Cancelled'),rev=live.reduce((t,o)=>t+o.total,0);
+  const day=new Date().toDateString(),today=O.filter(o=>new Date(o.created).toDateString()===day);
+  const todayRev=today.filter(o=>o.status!=='Cancelled').reduce((t,o)=>t+o.total,0);
+  const low=S.products.filter(p=>p.stock<=lowLimit()).sort((a,b)=>a.stock-b.stock);
+  const top=S.products.map(p=>({p,n:soldOf(p.id)})).filter(x=>x.n>0).sort((a,b)=>b.n-a.n).slice(0,5);
+  const by=st=>O.filter(o=>o.status===st).length;
+  return `<h2>Admin dashboard</h2>${nav}<div class="stats">
+  ${[[S.products.length,'Products'],[O.length,'Orders'],[by('Pending'),'Pending orders'],[today.length,'Orders today'],[money(todayRev),'Sales today'],[money(rev),'Total sales (excl. cancelled)']].map(([a,b])=>`<div class="stat"><b>${a}</b><span>${b}</span></div>`).join('')}</div>
+  <p class="row"><button class="btn pri" data-a="newp">Add product</button><button class="chip" data-a="ordfilter" data-v="Pending">Pending orders</button></p>
+  <h3>Orders by status</h3><div class="row">${STATUSES.map(st=>`<button class="chip" data-a="ordfilter" data-v="${st}">${st}: ${by(st)}</button>`).join('')}</div>
+  <h3>Top selling products</h3>${top.length?`<ol>${top.map(x=>`<li>${esc(x.p.name)}: ${x.n} sold</li>`).join('')}</ol>`:'<p class="empty">No sales yet.</p>'}
+  <h3>Low stock (${lowLimit()} or fewer)</h3>${low.length?`<div class="scroll"><table><tbody>${low.map(p=>`<tr><td>${esc(p.name)}</td><td>${p.stock} left</td><td><button class="chip" data-a="restock" data-v="${p.id}">Restock</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">Everything is well stocked.</p>'}
+  <h3>Recent orders</h3>${O.length?`<div class="scroll"><table><tbody>${O.slice(0,5).map(o=>`<tr><td>#${o.id}</td><td>${esc(o.name)}</td><td>${money(o.total)}</td><td><span class="badge ${o.status}">${o.status}</span></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No orders yet.</p>'}`;
+}
+function vOrders(nav){
+  let L=S.orders;
+  if(ordFilter!=='All')L=L.filter(o=>o.status===ordFilter);
+  const t=ordQ.trim().toLowerCase();
+  if(t)L=L.filter(o=>String(o.id).includes(t)||o.name.toLowerCase().includes(t)||String(o.phone).includes(t));
+  return `<h2>Orders</h2>${nav}
+  <div class="row" style="margin-bottom:12px"><input id="oq" type="search" placeholder="Search order number, name or phone" value="${esc(ordQ)}" aria-label="Search orders" style="min-width:250px">
+  ${['All',...STATUSES].map(st=>`<button class="chip ${ordFilter===st?'on':''}" data-a="ordfilter" data-v="${st}">${st}</button>`).join('')}<button class="chip" data-a="csv">Copy orders as CSV</button></div>
+  ${L.length?`<div class="scroll"><table><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+  ${L.map(o=>`<tr><td>#${o.id}<br><span class="muted">${new Date(o.created).toLocaleString()}</span></td>
+  <td>${esc(o.name)}<br><span class="muted">${esc(o.phone)} · ${esc(o.addr)}</span>${o.notes?`<br><span class="muted">Note: ${esc(o.notes)}</span>`:''}</td>
+  <td>${o.items.map(i=>esc(i.name)+(i.color?' ('+esc(i.color)+')':'')+' ×'+i.qty).join(', ')}</td>
+  <td>${money(o.total)}${o.delivery?`<br><span class="muted">incl. ${money(o.delivery)} delivery</span>`:''}</td>
+  <td>${o.status==='Cancelled'?'<span class="badge Cancelled">Cancelled</span>':`<select data-f="status" data-v="${o.id}" aria-label="Status of order ${o.id}">${STATUSES.map(st=>`<option ${st===o.status?'selected':''}>${st}</option>`).join('')}</select>`}</td>
+  <td class="row"><button class="chip" data-a="msgcust" data-v="${o.id}">Copy message</button>${o.status==='Cancelled'||o.status==='Delivered'?`<button class="chip del" data-a="delord" data-v="${o.id}">Delete</button>`:''}</td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No orders here yet.</p>'}`;
+}
+function vCustomers(nav){
+  const m=new Map();
+  S.orders.forEach(o=>{const k=norm(o.phone),c=m.get(k)||{name:o.name,phone:o.phone,n:0,spent:0,last:0};c.name=o.name;c.phone=o.phone;if(o.status!=='Cancelled'){c.n++;c.spent+=o.total}c.last=Math.max(c.last,o.created);m.set(k,c)});
+  const L=[...m.values()].sort((a,b)=>b.spent-a.spent);
+  return `<h2>Customers</h2>${nav}<p class="muted">Built from the orders your shop received. Customers are matched by phone number.</p>
+  ${L.length?`<div class="scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Orders</th><th>Spent</th><th>Last order</th><th></th></tr></thead><tbody>
+  ${L.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone)}</td><td>${c.n}</td><td>${money(c.spent)}</td><td>${new Date(c.last).toLocaleDateString()}</td><td><button class="chip" data-a="copyph" data-v="${esc(c.phone)}">Copy phone</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No customers yet. They appear after the first order.</p>'}`;
+}
+function vSettings(nav){
+  const c=cfg();
+  return `<h2>Settings</h2>${nav}
+  <h3>Store details</h3><form id="cfgForm" class="stack" style="max-width:640px">
+  <label>Store name <input name="name" value="${esc(c.name)}" required maxlength="40"></label>
+  <label>Currency symbol <input name="currency" value="${esc(c.currency)}" required maxlength="4" style="width:100px"></label>
+  <label>Delivery charge (0 = free) <input name="delivery" type="number" min="0" step="0.01" value="${c.delivery}"></label>
+  <label>Free delivery on orders over (0 = off) <input name="freeOver" type="number" min="0" step="0.01" value="${c.freeOver}"></label>
+  <label>Low stock warning at <input name="lowStock" type="number" min="0" step="1" value="${c.lowStock}"></label>
+  <label>Announcement bar (shown at the top of every page, empty to hide) <input name="notice" value="${esc(c.notice)}" maxlength="140"></label>
+  <label>Shop address <input name="address" value="${esc(c.address)}" maxlength="200"></label>
+  <label>Opening hours <input name="hours" value="${esc(c.hours)}" maxlength="100"></label>
+  <button class="btn pri">Save store details</button></form>
+  <h3>WhatsApp</h3><form id="waForm" class="stack"><label>Shop WhatsApp number (e.g. 01XXXXXXXXX, starting with 0 is fine) <input name="wa" type="tel" inputmode="numeric" value="${esc(S.wa||'')}" placeholder="01XXXXXXXXX"></label><button class="btn pri">Save WhatsApp number</button><p class="muted" style="margin:0">Customers will message: +${esc(waNum())}</p></form>
+  <h3>Admin login</h3>
+  <form id="emailForm" class="stack" style="margin-bottom:18px"><label>Admin email <input name="email" type="email" value="${esc(S.adminEmail)}" required></label><input name="cur" type="password" placeholder="Current password" required autocomplete="current-password"><button class="btn pri">Change admin email</button></form>
+  <form id="pwForm" class="stack"><input name="cur" type="password" placeholder="Current password" required autocomplete="current-password"><input name="nw" type="password" placeholder="New password (6+ characters)" minlength="6" required autocomplete="new-password"><button class="btn pri">Change password</button></form>
+  <p class="muted">This password only locks the admin screens in the page. For strong protection, share the page link only with people you trust.</p>
+  <h3>Backup and restore</h3><p class="muted">Copy a backup of all products, orders and settings, and keep it somewhere safe.</p>
+  <p><button class="chip" data-a="copybackup">Copy backup</button></p>
+  <form id="restoreForm" class="stack"><label>Paste a backup to restore <textarea name="json" rows="4" required></textarea></label><button class="btn">Restore backup</button></form>
+  <h3>Danger zone</h3><button class="chip del" data-a="resetdemo">Reset shop to the demo products</button>`;
+}
+function vBanners(nav){
+  const mine=S.banners||[];
+  return `<h2>Banners</h2>${nav}<p class="muted">These are the slides at the top of the shop. ${mine.length?'':'You are using the 3 default slides. Add your own and they replace the defaults.'}</p>
+  <form id="banForm" class="stack"><label>Headline <input name="title" required maxlength="70"></label><label>Short text (optional) <input name="sub" maxlength="120"></label><label>Button text (optional) <input name="cta" maxlength="20" placeholder="Shop now"></label><label>Banner image (optional, wide photos work best) <input name="img" type="file" accept="image/*"></label><button class="btn pri" id="banBtn">Add banner</button></form>
+  ${mine.length?`<div class="scroll" style="margin-top:20px"><table><thead><tr><th></th><th>Headline</th><th></th></tr></thead><tbody>${mine.map(b=>`<tr><td>${b.img?`<img class="mini" style="width:80px;height:44px" src="${esc(b.img)}" alt="">`:''}</td><td>${esc(b.title)}<div class="muted">${esc(b.sub||'')}</div></td><td><button class="chip del" data-a="delban" data-v="${b.id}">Delete</button></td></tr>`).join('')}</tbody></table></div>`:''}`;
+}
+function vAbout(){
+  const n=waNum(),cats=[...new Set(S.products.map(p=>p.cat))];
+  return `<div class="about"><h2>About CartZen</h2>
+  <p class="lead">CartZen is an online fashion store. Browse the collection, pick your color, add to your cart and order in a few taps. You pay in cash when your order arrives.</p>
+  <div class="grid" style="margin:24px 0">
+   <div class="card left"><b>Easy ordering</b><span class="muted">Order with just your name, phone number and address. No account needed.</span></div>
+   <div class="card left"><b>Pay on delivery</b><span class="muted">No online payment. You pay when the order is delivered to you.</span></div>
+   <div class="card left"><b>Track your order</b><span class="muted">Follow your order from Pending to Delivered with your order number and phone number.</span></div>
+   <div class="card left"><b>WhatsApp support</b><span class="muted">Message us about orders, delivery or products.</span></div></div>
+  ${cats.length?`<h3>What we sell</h3><p style="max-width:760px">Our shop currently has: ${cats.map(esc).join(', ')}. New products are added by our team regularly, so check Best Sellers and New Releases at the top of the page.</p>`:''}
+  <h3>How it works</h3>
+  <ol><li>Browse the shop and open a product to see its photos, colors and description.</li><li>Choose your color and add it to your cart.</li><li>Enter your delivery details and place your order.</li><li>Message us on WhatsApp so we can confirm it, then track it any time.</li><li>Pay in cash when your order is delivered.</li></ol>
+  <h3>Contact us</h3>
+  ${cfg().address?`<p>Address: ${esc(cfg().address)}</p>`:''}${cfg().hours?`<p>Hours: ${esc(cfg().hours)}</p>`:''}${n?`<p>WhatsApp: <b>+${esc(n)}</b></p>`:''}
+  <p><a class="btn pri" href="#help">Customer Service</a> <a class="chip" href="#track">Track my order</a></p></div>`;
+}
+function vHelp(){
+  const n=waNum();
+  return `<h2>Customer Service</h2><div class="stack" style="max-width:720px;gap:16px">
+  ${n?`<div class="wanote" style="margin:0"><h3 style="margin-top:0">Chat with us on WhatsApp</h3><p>We can help with orders, delivery and questions about products.</p><p><b>+${esc(n)}</b></p><div class="row"><a class="btn" style="background:#25D366;color:#000" href="${esc(waLink('Hello '+cfg().name+'! I need help.'))}" target="_blank" rel="noopener">Open WhatsApp</a><button class="chip" data-a="copynum">Copy number</button></div></div>`:''}
+  <h3 style="margin:8px 0 0">Common questions</h3>
+  <details><summary>How do I pay?</summary><p>You pay in cash when your order is delivered.</p></details>
+  <details><summary>How do I track my order?</summary><p>Open <a href="#track">Track order</a> and enter your order number and the phone number you used at checkout.</p></details>
+  <details><summary>Can I cancel my order?</summary><p>Yes, while it is still Pending. Open <a href="#track">Track order</a> and press Cancel order, or message us on WhatsApp.</p></details>
+  <details><summary>What do the order statuses mean?</summary><p>Pending: we received your order. Processing: we are preparing it. Shipped: it is on its way. Delivered: it has arrived.</p></details>
+  <details><summary>I have a problem with my order.</summary><p>Message us on WhatsApp with your order number and we will help.</p></details></div>`;
+}
+function vThanks(){
+  if(!lastOrder) return `<div class="box"><h2 style="margin-top:0">No recent order</h2><p><a href="#shop">Back to the shop</a></p></div>`;
+  const o=S.orders.find(x=>x.id===lastOrder.id)||lastOrder,hasWa=!!waNum();
+  return `<div class="thanks"><div class="check" aria-hidden="true">✓</div><h2>Thank you for your order!</h2>
+  <p>Your order <b>#${o.id}</b> has been received. Total: <b>${money(o.total)}</b> (pay on delivery).</p>
+  ${hasWa?`<div class="wanote"><h3 style="margin-top:0">Please contact us on WhatsApp</h3>
+  <p>To confirm your order and delivery, message us on WhatsApp with your order number. We will reply as soon as possible.</p>
+  <p>অর্ডার নিশ্চিত করতে অনুগ্রহ করে WhatsApp-এ আমাদের সাথে যোগাযোগ করুন এবং আপনার অর্ডার নম্বর জানান।</p>
+  <p><b>WhatsApp: +${esc(waNum())}</b></p>
+  <div class="row" style="justify-content:center"><button class="btn" style="background:#25D366;color:#000" data-a="copyorder" data-v="${o.id}">Copy order message</button><a class="chip" href="${esc(waLink(orderText(o)))}" target="_blank" rel="noopener">Open WhatsApp</a></div>
+  <p class="muted" style="margin-bottom:0">Tap <b>Copy order message</b>, open WhatsApp and paste it to us.</p></div>`:''}
+  <div class="card left" style="max-width:560px;margin:16px auto"><b>Order summary</b>
+  <ul>${o.items.map(i=>`<li>${esc(i.name)}${i.color?` (${esc(i.color)})`:''} × ${i.qty} · ${money(i.price*i.qty)}</li>`).join('')}</ul>
+  <div class="muted">Deliver to: ${esc(o.name)}, ${esc(o.addr)} · ${esc(o.phone)}</div></div>
+  ${progress(o.status)}
+  <div class="row" style="justify-content:center;margin-top:8px"><a class="btn pri" href="#track">Track my order</a><a class="chip" href="#shop">Continue shopping</a>${o.status==='Pending'&&S.orders.some(x=>x.id===o.id)?`<button class="chip del" data-a="cancelmine" data-v="${o.id}">Cancel order</button>`:''}</div></div>`;
+}
+function vCart(){
+  const L=cartLines(); const total=L.reduce((s,l)=>s+l.p.price*l.qty,0);
+  if(lastOrder&&!L.length) return vThanks();
+  if(!L.length) return `<h2>Your cart</h2><p class="empty">Your cart is empty. <a href="#shop">Browse products</a>.</p>`;
+  return `<h2>Your cart</h2><div class="scroll"><table><thead><tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>
+  ${L.map(l=>`<tr><td>${esc(l.p.name)}${l.c?` <span class="muted">(${esc(l.c.name)})</span>`:''}</td><td>${money(l.p.price)}</td><td class="row"><button class="chip" data-a="dec" data-v="${esc(l.key)}" aria-label="Remove one">−</button>${l.qty}<button class="chip" data-a="inc" data-v="${esc(l.key)}" aria-label="Add one">+</button></td><td>${money(l.p.price*l.qty)}</td></tr>`).join('')}
+  </tbody><tfoot><tr><td colspan="3">Subtotal</td><td>${money(total)}</td></tr><tr><td colspan="3">Delivery</td><td>${feeFor(total)?money(feeFor(total)):'Free'}</td></tr><tr><th colspan="3">Total</th><th>${money(total+feeFor(total))}</th></tr></tfoot></table></div>
+  <h3>Delivery details</h3><form id="checkout" class="stack"><input name="name" placeholder="Your name" required maxlength="80" value="${esc(cust?cust.name:'')}">
+  <input name="phone" type="tel" placeholder="Phone number" required maxlength="30" value="${esc(cust?cust.phone:'')}"><input name="addr" placeholder="Delivery address" required maxlength="300">
+  <textarea name="notes" placeholder="Notes (optional)" rows="2" maxlength="300"></textarea><p class="muted">Payment: cash on delivery.</p><button class="btn pri">Place order</button></form>`;
+}
+const norm=t=>String(t||'').replace(/\D/g,'').slice(-10);
+const STEPS=['Pending','Processing','Shipped','Delivered'];
+function progress(status){
+  if(status==='Cancelled') return '<p class="badge Cancelled" style="display:inline-block">This order was cancelled.</p>';
+  const at=STEPS.indexOf(status);
+  return `<ol class="steps" aria-label="Order progress">${STEPS.map((t,i)=>`<li class="${i<at?'done':''}${i===at?' now':''}">${t}</li>`).join('')}</ol>`;
+}
+let cust=null;try{cust=JSON.parse(localStorage.getItem('cz-cust')||'null')}catch(e){}
+const users=()=>{try{return JSON.parse(localStorage.getItem('cz-users')||'[]')}catch(e){return []}};
+const saveUsers=a=>{try{localStorage.setItem('cz-users',JSON.stringify(a))}catch(e){}};
+function signIn(u){cust={id:u.id,name:u.name,phone:u.phone};try{localStorage.setItem('cz-cust',JSON.stringify(cust))}catch(e){}msg=''}
+function vLogin(){
+  return `<div class="box"><h2 style="margin-top:0">Customer login</h2>
+  ${msg?`<p class="error" role="alert">${esc(msg)}</p>`:''}
+  <form id="custLogin" class="stack"><label>Phone number <input name="phone" type="tel" autocomplete="username" required></label>
+  <label>Password <input name="pw" type="password" autocomplete="current-password" required></label><button class="btn pri">Log in</button></form>
+  <p class="muted">New here? <a href="#register">Create an account</a></p>
+  <p class="muted">You can also order without an account.</p>
+  <p class="muted">Store admin? <a href="#adminlogin">Admin login</a></p></div>`;
+}
+function vRegister(){
+  return `<div class="box"><h2 style="margin-top:0">Create your account</h2>
+  ${msg?`<p class="error" role="alert">${esc(msg)}</p>`:''}
+  <form id="custReg" class="stack"><label>Full name <input name="name" required maxlength="80" autocomplete="name"></label>
+  <label>Phone number <input name="phone" type="tel" required maxlength="30" autocomplete="username"></label>
+  <label>Password (6+ characters) <input name="pw" type="password" minlength="6" required autocomplete="new-password"></label><button class="btn pri">Register</button></form>
+  <p class="muted">Already have an account? <a href="#login">Customer login</a></p>
+  <p class="muted">Your account is saved on this device.</p></div>`;
+}
+function vAccount(){
+  if(!cust) return vLogin();
+  const ph=norm(cust.phone),seen=new Set(),list=[];
+  [...S.orders,...myOrders()].forEach(o=>{if(norm(o.phone)===ph&&!seen.has(o.id)){seen.add(o.id);list.push(S.orders.find(z=>z.id===o.id)||o)}});
+  list.sort((a,b)=>b.id-a.id);
+  return `<h2>My account</h2><p>${esc(cust.name)} · ${esc(cust.phone)}</p>
+  <h3>My orders</h3>${list.length?`<div class="scroll"><table><thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody>
+  ${list.map(o=>`<tr><td>#${o.id}</td><td>${new Date(o.created).toLocaleDateString()}</td><td>${money(o.total)}</td><td><span class="badge ${o.status}">${o.status}</span></td><td><button class="chip" data-a="trackthis" data-v="${o.id}">View</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No orders yet. <a href="#shop">Start shopping</a>.</p>'}
+  <p class="muted">Your account is saved on this device. Orders are matched by your phone number.</p>`;
+}
+const LK='cz-orders';
+function myOrders(){try{return JSON.parse(localStorage.getItem(LK)||'[]')}catch(e){return []}}
+function rememberOrder(o){
+  try{const a=myOrders(),i=a.findIndex(x=>x.id===o.id),c=JSON.parse(JSON.stringify(o));
+    if(i>=0)a[i]=c;else a.unshift(c);localStorage.setItem(LK,JSON.stringify(a.slice(0,30)))}catch(e){}
+}
+function vTrack(){
+  const find=l=>l.find(x=>String(x.id)===trackQ.id&&norm(x.phone)===norm(trackQ.phone));
+  let o=null,local=false;
+  if(trackQ&&norm(trackQ.phone)!==''){
+    o=find(S.orders)||null;
+    if(o)rememberOrder(o);else{o=find(myOrders())||null;local=!!o}
+  }
+  const mine=myOrders();
+  return `<h2>Track your order</h2>
+  <form id="trackForm" class="stack"><label>Order number <input name="id" inputmode="numeric" placeholder="e.g. 1001" required value="${esc(trackQ?trackQ.id:'')}"></label>
+  <label>Phone number used at checkout <input name="phone" type="tel" required value="${esc(trackQ?trackQ.phone:'')}"></label><button class="btn pri">Find order</button></form>
+  ${mine.length?`<div style="margin-top:16px"><div class="muted">Orders placed on this device (tap to view):</div><div class="row" style="margin-top:6px">${mine.map(x=>{const live=S.orders.find(z=>z.id===x.id)||x;return `<button class="chip" data-a="trackthis" data-v="${x.id}">#${x.id} · ${esc(live.status)}</button>`}).join('')}</div></div>`:''}
+  ${trackQ&&!o?'<p class="error" role="alert">No order matches that number and phone. Please check both and try again.</p>':''}
+  ${o?`<div class="card left" style="max-width:680px;margin-top:20px"><div><b>Order #${o.id}</b> <span class="badge ${o.status}">${o.status}</span></div>
+  <div class="muted">Placed ${new Date(o.created).toLocaleString()} · Pay on delivery</div>
+  ${progress(o.status)}
+  ${local?'<p class="muted" style="margin:0">This is the copy saved on this device. The shop may not have it, so the status may not update.</p>':''}
+  <div class="muted">Deliver to: ${esc(o.name)}, ${esc(o.addr)}</div>
+  <ul>${o.items.map(i=>`<li>${esc(i.name)}${i.color?` (${esc(i.color)})`:''} × ${i.qty} · ${money(i.price*i.qty)}</li>`).join('')}</ul>
+  <b>Total ${money(o.total)}</b>
+  ${o.status==='Pending'&&!local?`<button class="chip del" data-a="cancelmine" data-v="${o.id}" style="justify-self:start">Cancel order</button>`:''}${o.status==='Pending'&&local&&waNum()?`<p class="muted" style="margin:0">To cancel this order, message us on WhatsApp: +${esc(waNum())}</p>`:''}</div>`:''}
+  <section style="margin-top:28px;max-width:680px"><h3>Order status guide</h3>${o?'':progress(null)}
+  <ul class="legend"><li><b>Pending</b>: we received your order.</li><li><b>Processing</b>: we are preparing your items.</li><li><b>Shipped</b>: your order is on its way.</li><li><b>Delivered</b>: your order has arrived.</li></ul></section>`;
+}
+
+/* ---------- Admin ---------- */
+function vAdminLogin(){
+  return `<div class="box"><h2 style="margin-top:0">Admin login</h2><p class="muted">For store administrators only.</p>
+  ${msg?`<p class="error" role="alert">${esc(msg)}</p>`:''}
+  <form id="adminForm" class="stack"><input name="email" type="email" placeholder="Admin email" autocomplete="username" required>
+  <input name="pw" type="password" placeholder="Password" autocomplete="current-password" required><button class="btn pri">Log in to admin</button></form>
+  <p class="muted">First time? Email <b>admin@eflyer.com</b>, password <b>Admin@123</b>. Change it under Settings after logging in.</p></div>`;
+}
+function vAdmin(){
+  const tabs=[['dash','Dashboard'],['prod','Products'],['ord','Orders'],['cus','Customers'],['ban','Banners'],['set','Settings']];
+  const nav=`<div class="filters" style="justify-content:flex-start">${tabs.map(([k,t])=>`<button class="chip ${tab===k?'on':''}" data-a="tab" data-v="${k}">${t}</button>`).join('')}</div>`;
+  if(tab==='dash') return vDash(nav);
+  if(tab==='ban') return vBanners(nav);
+  if(tab==='prod') return vProducts(nav);
+  if(tab==='ord') return vOrders(nav);
+  if(tab==='cus') return vCustomers(nav);
+  return vSettings(nav);
+}
+
+function slidesOf(p){
+  const L=[];if(p.img)L.push({src:p.img,label:'Main photo',color:null});
+  (p.colors||[]).forEach(c=>{if(c.img)L.push({src:c.img,label:c.name,color:c.name})});
+  return L;
+}
+function syncUI(){
+  document.querySelectorAll('.tb').forEach(b=>{const on=+b.dataset.v===slideIdx;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  document.querySelectorAll('.sw').forEach(b=>{const on=b.dataset.v===detailColor;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
+  const cl=$('#colorLabel');if(cl)cl.textContent=detailColor;
+  const t=$('#track');if(t)t.style.transform='translateX(-'+slideIdx*100+'%)';
+}
+function goSlide(i){
+  const p=S.products.find(x=>x.id===detailId);if(!p)return;
+  const sl=slidesOf(p);if(sl.length<2)return;
+  slideIdx=(i+sl.length)%sl.length;const z=sl[slideIdx];if(z.color!=null)detailColor=z.color;syncUI();
+}
+function vProduct(){
+  const p=S.products.find(x=>x.id===detailId);
+  if(!p) return `<p class="empty">Product not found. <a href="#shop">Back to the shop</a>.</p>`;
+  const cols=p.colors||[],c=cols.find(x=>x.name===detailColor)||null,sl=slidesOf(p);
+  if(slideIdx>=sl.length)slideIdx=0;
+  const inCart=inCartTotal(p.id),left=p.stock-inCart;
+  return `<p><a href="#shop">← Back to the shop</a></p>
+  <div class="detail"><div class="gal">
+  ${sl.length?`<div class="slider" id="slider" role="region" aria-roledescription="carousel" aria-label="Product photos"><div class="track" id="track" style="transform:translateX(-${slideIdx*100}%)">${sl.map(z=>`<div class="slide"><img src="${esc(z.src)}" alt="${esc(p.name)} (${esc(z.label)})"></div>`).join('')}</div>${sl.length>1?`<button class="nav prev" data-a="prev" aria-label="Previous photo">‹</button><button class="nav next" data-a="next" aria-label="Next photo">›</button>`:''}</div>`:`<div class="thumb big"><span aria-hidden="true">${EMO[p.cat]||'🛍️'}</span></div>`}
+  ${sl.length>1?`<div class="row" style="margin-top:10px" role="group" aria-label="Photo thumbnails">${sl.map((z,k)=>`<button class="tb ${k===slideIdx?'on':''}" data-a="slide" data-v="${k}" aria-label="${esc(z.label)}" aria-pressed="${k===slideIdx}"><img src="${esc(z.src)}" alt=""></button>`).join('')}</div>`:''}
+  </div>
+  <div class="stack"><p class="muted" style="margin:0">${esc(p.cat)}</p><h2 style="margin:0">${esc(p.name)}</h2>
+  <div class="price" style="font-size:26px;font-weight:600">${money(p.price)}</div>
+  ${cols.length?`<div><div class="muted">Color: <b id="colorLabel">${esc(c?c.name:'')}</b></div><div class="row" role="group" aria-label="Choose a color" style="margin-top:6px">${cols.map(x=>`<button class="sw ${c&&x.name===c.name?'on':''}" data-a="pickcolor" data-v="${esc(x.name)}" style="background:${esc(x.hex||'#ccc')}" aria-label="${esc(x.name)}" aria-pressed="${!!c&&x.name===c.name}" title="${esc(x.name)}"></button>`).join('')}</div></div>`:''}
+  <div class="muted">${p.stock>0?p.stock+' in stock':'Sold out'}${inCart?` · ${inCart} in your cart`:''}</div>
+  ${left>0?`<div class="row"><label>Quantity <input id="qty" type="number" min="1" max="${left}" value="1" style="width:90px"></label><button class="btn pri" data-a="addqty" data-v="${p.id}">Add to cart</button></div>`:(p.stock>0?'<p class="muted">All available stock is already in your cart.</p>':'')}
+  <a class="chip" href="#cart" style="justify-self:start">Go to cart</a></div></div>
+  <section style="margin-top:32px;padding-top:18px;border-top:1px solid var(--line)"><h3 style="margin-top:0">Description</h3><p style="white-space:pre-line;max-width:900px">${p.desc?esc(p.desc):'No description yet.'}</p></section>`;
+}
+const colorRow=c=>`<div class="crow row"><input class="cn" placeholder="Color name (e.g. Red)" maxlength="30" value="${esc(c.name||'')}" aria-label="Color name" style="flex:1;min-width:120px"><input class="ch" type="color" value="${esc(c.hex||'#e3ab1c')}" aria-label="Pick the color"><input class="ci" type="hidden" value="${esc(c.img||'')}">${c.img?`<img class="mini" src="${esc(c.img)}" alt="Current image for this color">`:''}<input class="cf" type="file" accept="image/*" aria-label="Image for this color" style="max-width:190px"><button type="button" class="chip del" data-a="rmcolor">Remove</button></div>`;
+function vProducts(nav){
+  const cats=[...new Set(S.products.map(p=>p.cat))];
+  if(editId!==null){
+    const p=editId===0?{name:'',desc:'',cat:'',price:'',stock:''}:(S.products.find(x=>x.id===editId)||{name:'',cat:''});
+    return `<h2>${editId===0?'Add product':'Edit product'}</h2>${nav}
+    <form id="prodForm" class="stack" style="max-width:640px"><label>Name <input name="name" value="${esc(p.name)}" required maxlength="80"></label>
+    <label>Description <textarea name="desc" rows="8" maxlength="5000">${esc(p.desc||'')}</textarea></label>
+    <label>Category <input name="cat" list="cl" value="${esc(p.cat)}" required maxlength="40"></label>
+    <datalist id="cl">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist>
+    <label>Price <input name="price" type="number" min="0.01" step="0.01" value="${p.price}" required></label>
+    <label>Stock <input name="stock" type="number" min="0" step="1" value="${p.stock}" required></label>
+    <label class="check"><input type="checkbox" name="gift" ${p.gift?'checked':''}> Show in Gift Ideas</label>
+    <label class="check"><input type="checkbox" name="deal" ${p.deal?'checked':''}> Show in Today’s Deals</label>
+    ${p.img?`<img class="preview" src="${esc(p.img)}" alt="Current product image"><label class="check"><input type="checkbox" name="rmimg"> Remove current image</label>`:''}
+    <div style="display:grid;gap:8px"><b>Colors (optional, add as many as you like)</b><div id="colorRows" style="display:grid;gap:8px">${(p.colors||[]).map(colorRow).join('')}</div><button type="button" class="chip" data-a="addcolor" style="justify-self:start">+ Add color</button></div>
+    <label>Main product image (JPG, PNG or WEBP) <input name="img" type="file" accept="image/*"></label>
+    <div class="row"><button class="btn pri" id="saveBtn">Save product</button><button type="button" class="chip" data-a="canceledit">Cancel</button></div></form>`;
+  }
+  const t=prodQ.trim().toLowerCase(),L=S.products.filter(p=>!t||p.name.toLowerCase().includes(t)||p.cat.toLowerCase().includes(t));
+  return `<h2>Products</h2>${nav}<div class="row" style="margin-bottom:12px"><button class="btn pri" data-a="newp">Add product</button><input id="pq" type="search" placeholder="Search products" value="${esc(prodQ)}" aria-label="Search products" style="min-width:220px"></div>
+  ${L.length?`<div class="scroll"><table><thead><tr><th></th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr></thead><tbody>
+  ${L.map(p=>`<tr class="${p.hidden?'dim':''}"><td>${p.img?`<img class="mini" src="${esc(p.img)}" alt="">`:`<span aria-hidden="true">${EMO[p.cat]||'🛍️'}</span>`}</td>
+  <td>${esc(p.name)}${p.hidden?' <span class="badge">Hidden</span>':''}${p.gift?' <span class="badge">Gift</span>':''}${p.deal?' <span class="badge">Deal</span>':''}${(p.colors||[]).length?`<div class="row" style="margin-top:4px">${p.colors.map(c=>c.img?`<img class="mini" style="width:28px;height:28px" src="${esc(c.img)}" alt="${esc(c.name)}" title="${esc(c.name)}">`:`<span class="dot" style="background:${esc(c.hex||'#ccc')}" title="${esc(c.name)}"></span>`).join('')}</div>`:''}</td>
+  <td>${esc(p.cat)}</td><td>${money(p.price)}</td><td>${p.stock<=lowLimit()?`<span class="badge Cancelled">${p.stock}</span>`:p.stock}</td>
+  <td class="row"><button class="chip" data-a="editp" data-v="${p.id}">Edit</button><button class="chip" data-a="dup" data-v="${p.id}">Duplicate</button><button class="chip" data-a="hide" data-v="${p.id}">${p.hidden?'Show':'Hide'}</button><button class="chip del" data-a="delp" data-v="${p.id}">Delete</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="empty">No products found.</p>'}`;
+}
+function shrink(file,max,qual){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);
+  im.onload=()=>{const r=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>b?res(b):rej(),'image/jpeg',qual)};
+  im.onerror=()=>{URL.revokeObjectURL(u);rej()};im.src=u})}
+const blobToUrl=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)});
+async function storeImage(file,big){
+  let assets=null; try{assets=window.claude&&claude.use?await claude.use('assets'):null}catch(e){}
+  if(assets){try{const b=await shrink(file,big?1400:800,.8);const r=await Promise.race([assets.upload(b),new Promise((_,rej)=>setTimeout(rej,12000))]);return r.url}catch(e){}}
+  return blobToUrl(await shrink(file,big?640:320,.6));   // fallback: small image kept inside the shop data
+}
+
+/* ---------- Actions ---------- */
+async function cancelOrder(o){
+  if(o.status==='Cancelled')return;
+  o.items.forEach(i=>{const p=S.products.find(x=>x.id===i.id);if(p)p.stock+=i.qty});
+  o.status='Cancelled';
+}
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-a]'); if(!b)return; const a=b.dataset.a,v=b.dataset.v;
+  if(a==='cat'){cat=v;coll=null;render()}
+  if(a==='coll'){coll=v||null;cat='All';q='';if(view()!=='shop')go('shop');else render();setTimeout(()=>{const t=document.getElementById('products');if(v&&t)t.scrollIntoView({behavior:'smooth'});else window.scrollTo(0,0)},60)}
+  if(a==='open'){detailId=+v;{const pp=S.products.find(x=>x.id===detailId);detailColor=pp&&(pp.colors||[])[0]?pp.colors[0].name:'';slideIdx=0}window.scrollTo(0,0);if(view()==='product')render();else go('product')}
+  if(a==='pickcolor'){detailColor=v;const pp=S.products.find(x=>x.id===detailId),k=pp?slidesOf(pp).findIndex(z=>z.color===v):-1;if(k>=0)slideIdx=k;syncUI()}
+  if(a==='slide'){goSlide(+v)}
+  if(a==='prev'){goSlide(slideIdx-1)}
+  if(a==='next'){goSlide(slideIdx+1)}
+  if(a==='addcolor'){$('#colorRows').insertAdjacentHTML('beforeend',colorRow({}))}
+  if(a==='rmcolor'){b.closest('.crow').remove()}
+  if(a==='addqty'){const p=S.products.find(x=>x.id==v),hasC=(p.colors||[]).length;const n=Math.max(1,Math.floor(+$('#qty').value||1));const key=hasC?v+'|'+detailColor:''+v;const add=Math.min(n,p.stock-inCartTotal(v));if(add>0){cart[key]=(cart[key]||0)+add;toast(p.name+(hasC?' ('+detailColor+')':'')+' added to cart')}else toast('No more stock for '+p.name);render()}
+  if(a==='add'){const p=S.products.find(x=>x.id==v);if((cart[v]||0)<p.stock){cart[v]=(cart[v]||0)+1;toast(p.name+' added to cart')}else toast('No more stock for '+p.name);render()}
+  if(a==='inc'){const pid=v.split('|')[0],p=S.products.find(x=>x.id==pid);if(p&&inCartTotal(pid)<p.stock)cart[v]++;render()}
+  if(a==='dec'){if(--cart[v]<1)delete cart[v];render()}
+  if(a==='tab'){tab=v;editId=null;render()}if(a==='newp'){editId=0;render()}if(a==='editp'){editId=+v;render()}if(a==='canceledit'){editId=null;render()}
+  if(a==='logout'){adminOK=false;cust=null;try{localStorage.removeItem('cz-cust')}catch(e){}editId=null;go('shop');render()}
+  if(a==='delp'&&await ask('Delete this product? This cannot be undone.','Yes, delete','Keep it')){S.products=S.products.filter(p=>p.id!=v);render();await save()}
+  if(a==='poster'){cat=v||'All';coll=null;render();const t=document.getElementById('products');if(t)t.scrollIntoView({behavior:'smooth'})}
+  if(a==='ordfilter'){ordFilter=v;ordQ='';tab='ord';render()}
+  if(a==='restock'){tab='prod';editId=+v;render()}
+  if(a==='dup'){const o=S.products.find(x=>x.id==v);if(o){const c=JSON.parse(JSON.stringify(o));c.id=S.nextP++;c.name=o.name+' (copy)';c.hidden=true;S.products.push(c);render();if(await save())toast('Duplicated. The copy is hidden until you show it.')}}
+  if(a==='hide'){const o=S.products.find(x=>x.id==v);if(o){o.hidden=!o.hidden;render();if(await save())toast(o.hidden?'Product hidden from the shop':'Product is visible again')}}
+  if(a==='msgcust'){const o=S.orders.find(x=>x.id==v);if(o)toast(await copyText('Hello '+o.name+', your order #'+o.id+' is now '+o.status+'. Thank you for shopping with '+cfg().name+'!')?'Message copied. Paste it in WhatsApp to the customer.':'Could not copy the message.')}
+  if(a==='delord'&&await ask('Delete this order from the list? This cannot be undone.','Yes, delete','Keep it')){S.orders=S.orders.filter(x=>String(x.id)!==v);render();await save()}
+  if(a==='csv'){const q=x=>'"'+String(x==null?'':x).replace(/"/g,'""')+'"';const rows=[['Order','Date','Name','Phone','Address','Items','Delivery','Total','Status'].map(q).join(',')].concat(S.orders.map(o=>[o.id,new Date(o.created).toISOString(),o.name,o.phone,o.addr,o.items.map(i=>i.name+(i.color?' ('+i.color+')':'')+' x'+i.qty).join('; '),o.delivery||0,o.total,o.status].map(q).join(',')));toast(await copyText(rows.join('\n'))?'Orders copied as CSV. Paste into Excel or Google Sheets.':'Could not copy the orders.')}
+  if(a==='copyph'){toast(await copyText(v)?'Phone number copied':'Could not copy')}
+  if(a==='copybackup'){toast(await copyText(JSON.stringify(S))?'Backup copied. Paste it somewhere safe.':'Could not copy the backup.')}
+  if(a==='resetdemo'&&await ask('Replace ALL products, orders and banners with the demo data? This cannot be undone.','Yes, reset','Keep my data')){const keep={adminEmail:S.adminEmail,adminHash:S.adminHash,wa:S.wa,cfg:S.cfg};S=Object.assign(seed(),keep);editId=null;render();if(await save())toast('Shop reset')}
+  if(a==='hprev'){goHero(heroIdx-1)}
+  if(a==='hnext'){goHero(heroIdx+1)}
+  if(a==='hgo'){goHero(+v)}
+  if(a==='hplay'){heroHold=!heroHold;b.textContent=heroHold?'▶':'❚❚';b.setAttribute('aria-label',heroHold?'Play slideshow':'Pause slideshow')}
+  if(a==='delban'&&await ask('Delete this banner?','Yes, delete','Keep it')){S.banners=(S.banners||[]).filter(x=>String(x.id)!==v);heroIdx=0;render();await save()}
+  if(a==='wabox'){
+    const bx=$('#waBox');if(!bx.hidden){bx.hidden=true;return}
+    const pr=view()==='product'?S.products.find(x=>x.id===detailId):null;
+    bx.innerHTML=waBoxHtml(pr?'Hello '+cfg().name+'! I have a question about: '+pr.name:'Hello '+cfg().name+'! I have a question.');bx.hidden=false;
+  }
+  if(a==='copynum'){toast(await copyText('+'+waNum())?'Number copied':'Could not copy the number')}
+  if(a==='copyorder'){
+    const o=(lastOrder&&String(lastOrder.id)===v?lastOrder:null)||S.orders.find(x=>String(x.id)===v)||myOrders().find(x=>String(x.id)===v);
+    if(o)toast(await copyText(orderText(o))?'Order message copied. Paste it in WhatsApp.':'Could not copy. Please type your order in WhatsApp.');
+  }
+  if(a==='trackthis'){const x=S.orders.find(z=>String(z.id)===v)||myOrders().find(z=>String(z.id)===v);if(x){trackQ={id:String(x.id),phone:x.phone};if(view()!=='track')go('track');else render()}}
+  if(a==='cancelmine'&&await ask('Cancel this order?','Yes, cancel order','Keep order')){const o=S.orders.find(x=>x.id==v);if(!o)return;await cancelOrder(o);rememberOrder(o);render();await save();toast('Order cancelled')}
+});
+document.addEventListener('input',e=>{if(e.target.id==='q'){q=e.target.value;const pos=e.target.selectionStart;render();const i=$('#q');i.focus();i.setSelectionRange(pos,pos)}});
+document.addEventListener('change',async e=>{
+  const f=e.target.dataset.f; if(!f)return; const id=+e.target.dataset.v;
+  if(f==='price'||f==='stock'){const p=S.products.find(x=>x.id===id);const n=+e.target.value;if(f==='price'&&n>0)p.price=n;if(f==='stock'&&n>=0)p.stock=Math.floor(n);render();await save();toast('Saved')}
+  if(f==='status'){const o=S.orders.find(x=>x.id===id);if(e.target.value==='Cancelled'){if(!await ask('Cancel this order and restock the items?','Yes, cancel order','Keep order')){render();return}await cancelOrder(o)}else o.status=e.target.value;render();await save();toast('Order updated')}
+});
+document.addEventListener('submit',async e=>{
+  e.preventDefault(); const id=e.target.id,f=new FormData(e.target);
+  if(id==='checkout'){
+    const L=cartLines(); if(!L.length)return;
+    const o={id:S.nextO++,created:Date.now(),name:f.get('name').trim(),phone:f.get('phone').trim(),addr:f.get('addr').trim(),notes:(f.get('notes')||'').trim(),status:'Pending',
+      items:L.map(l=>({id:l.p.id,name:l.p.name,color:l.c?l.c.name:'',qty:l.qty,price:l.p.price})),delivery:feeFor(subOf(L)),total:subOf(L)+feeFor(subOf(L))};
+    L.forEach(l=>l.p.stock-=l.qty); S.orders.unshift(o); cart={}; lastOrder=o; trackQ={id:String(o.id),phone:o.phone}; rememberOrder(o); go('thankyou'); render(); window.scrollTo(0,0); if(await save())toast('Order placed. Thank you!');else toast('Your order is saved on this device, but the shop could not be updated. Please contact the store.');
+  }
+  if(id==='trackForm'){trackQ={id:String(f.get('id')).replace(/\D/g,''),phone:f.get('phone').trim()};render()}
+  if(id==='cfgForm'){
+    S.cfg={name:f.get('name').trim()||'CartZen',currency:f.get('currency').trim()||'$',delivery:Math.max(0,+f.get('delivery')||0),freeOver:Math.max(0,+f.get('freeOver')||0),lowStock:Math.max(0,Math.floor(+f.get('lowStock')||0)),notice:f.get('notice').trim(),address:f.get('address').trim(),hours:f.get('hours').trim()};
+    render();if(await save())toast('Store details saved');
+  }
+  if(id==='emailForm'){
+    const cur=await sha(f.get('cur')),good=S.adminHash||await sha('Admin@123');
+    if(cur!==good){toast('Current password is incorrect');return}
+    S.adminEmail=f.get('email').trim().toLowerCase();render();if(await save())toast('Admin email updated');
+  }
+  if(id==='restoreForm'){
+    let o;try{o=JSON.parse(f.get('json'))}catch(err){toast('That is not a valid backup.');return}
+    if(!o||!Array.isArray(o.products)||!Array.isArray(o.orders)){toast('That is not a valid backup.');return}
+    if(!await ask('Replace all current shop data with this backup?','Yes, restore','Keep current'))return;
+    S=Object.assign(seed(),o);editId=null;render();if(await save())toast('Backup restored');
+  }
+  if(id==='custReg'){
+    const name=f.get('name').trim(),phone=f.get('phone').trim(),pw=String(f.get('pw'));
+    if(norm(phone).length<10||pw.length<6){msg='Enter a valid phone number and a password of at least 6 characters.';render();return}
+    const U=users();
+    if(U.some(u=>norm(u.phone)===norm(phone))){msg='That phone number already has an account. Please log in.';render();return}
+    const u={id:Date.now(),name,phone,hash:await sha(norm(phone)+':'+pw)};U.push(u);saveUsers(U);
+    signIn(u);go('account');render();toast('Welcome, '+name.split(' ')[0]+'!');
+  }
+  if(id==='custLogin'){
+    const phone=f.get('phone').trim(),h=await sha(norm(phone)+':'+f.get('pw')),u=users().find(x=>norm(x.phone)===norm(phone)&&x.hash===h);
+    if(!u){msg='Phone number or password is incorrect.';render();return}
+    signIn(u);go('account');render();toast('Logged in');
+  }
+  if(id==='adminForm'){
+    const h=await sha(f.get('pw')), good=S.adminHash||await sha('Admin@123');
+    if(f.get('email').trim().toLowerCase()===S.adminEmail&&h===good){adminOK=true;msg='';go('admin');render()}
+    else{msg='Email or password is incorrect.';render()}
+  }
+  if(id==='addForm'){S.products.push({id:S.nextP++,name:f.get('name').trim(),cat:f.get('cat').trim(),price:+f.get('price'),stock:Math.floor(+f.get('stock'))});render();await save();toast('Product added')}
+  if(id==='prodForm'){
+    const btn=$('#saveBtn'),reset=()=>{btn.disabled=false;btn.textContent='Save product'};
+    btn.disabled=true;btn.textContent='Saving…';
+    const file=f.get('img');let img;
+    if(file&&file.size>0){
+      if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type)||file.size>10000000){toast('Choose a JPG, PNG or WEBP image under 10 MB.');reset();return}
+      try{img=await storeImage(file)}catch(err){toast('Could not read that image.');reset();return}
+    }
+    const colors=[];
+    for(const r of document.querySelectorAll('#colorRows .crow')){
+      const name=r.querySelector('.cn').value.trim(),fl0=r.querySelector('.cf').files[0];
+      if(!name){if(fl0){toast('Type a color name for the photo you chose.');r.querySelector('.cn').focus();reset();return}continue}
+      if(colors.some(c=>c.name.toLowerCase()===name.toLowerCase())){toast('Each color needs a different name: '+name);reset();return}
+      let cimg=r.querySelector('.ci').value||undefined; const fl=r.querySelector('.cf').files[0];
+      if(fl){
+        if(!/^image\//.test(fl.type)||fl.size>10000000){toast('Each color image must be a picture under 10 MB.');reset();return}
+        try{cimg=await storeImage(fl)}catch(err){toast('Could not read a color image.');reset();return}
+      }
+      colors.push({name,hex:r.querySelector('.ch').value,...(cimg?{img:cimg}:{})});
+    }
+    const p=editId===0?{id:S.nextP++}:S.products.find(x=>x.id===editId);
+    if(!p){editId=null;render();return}
+    p.name=f.get('name').trim();p.desc=(f.get('desc')||'').trim();p.cat=f.get('cat').trim();p.price=+f.get('price');p.stock=Math.max(0,Math.floor(+f.get('stock')));if(colors.length)p.colors=colors;else delete p.colors;p.gift=!!f.get('gift');p.deal=!!f.get('deal');
+    if(img!==undefined)p.img=img;else if(f.get('rmimg'))delete p.img;
+    if(editId===0)S.products.push(p);
+    editId=null;render();if(await save())toast('Product saved');
+  }
+  if(id==='banForm'){
+    const btn=$('#banBtn'),reset=()=>{btn.disabled=false;btn.textContent='Add banner'};
+    btn.disabled=true;btn.textContent='Saving…';
+    const file=f.get('img');let img;
+    if(file&&file.size>0){
+      if(!/^image\//.test(file.type)||file.size>10000000){toast('Choose a picture under 10 MB.');reset();return}
+      try{img=await storeImage(file,true)}catch(err){toast('Could not read that image.');reset();return}
+    }
+    (S.banners=S.banners||[]).push({id:Date.now(),title:f.get('title').trim(),sub:(f.get('sub')||'').trim(),cta:(f.get('cta')||'').trim(),...(img?{img}:{})});
+    heroIdx=0;render();if(await save())toast('Banner added');
+  }
+  if(id==='waForm'){S.wa=String(f.get('wa')).replace(/\D/g,'');render();if(await save())toast('WhatsApp number saved')}
+  if(id==='pwForm'){
+    const cur=await sha(f.get('cur')),good=S.adminHash||await sha('Admin@123');
+    if(cur!==good){toast('Current password is incorrect');return}
+    S.adminHash=await sha(f.get('nw'));await save();e.target.reset();toast('Password updated');
+  }
+});
+addEventListener('hashchange',()=>{msg='';render()});
+document.addEventListener('change',e=>{
+  const t=e.target;if(!t.classList||!t.classList.contains('cf'))return;
+  const f=t.files[0],row=t.closest('.crow');let im=row.querySelector('img.mini');
+  if(!f){if(im&&im.dataset.new)im.remove();return}
+  if(!im){im=document.createElement('img');im.className='mini';row.insertBefore(im,t)}
+  im.dataset.new='1';im.alt='Chosen photo for this color';im.src=URL.createObjectURL(f);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('.thumb[data-a="open"]'))e.target.click()});
+let tx=null;
+document.addEventListener('touchstart',e=>{tx=e.target.closest('#slider')?e.touches[0].clientX:null},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>40)goSlide(slideIdx+(dx<0?1:-1))});
+document.addEventListener('keydown',e=>{if(view()==='product'&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)){if(e.key==='ArrowRight')goSlide(slideIdx+1);if(e.key==='ArrowLeft')goSlide(slideIdx-1)}});
+
+setInterval(()=>{if(view()==='shop'&&!heroPause&&!heroHold&&!document.hidden&&banners().length>1&&!matchMedia('(prefers-reduced-motion: reduce)').matches)goHero(heroIdx+1)},5000);
+document.addEventListener('mouseover',e=>{heroPause=!!e.target.closest('#hs')});
+document.addEventListener('focusin',e=>{if(e.target.closest('#hs'))heroPause=true});
+document.addEventListener('focusout',e=>{if(e.target.closest('#hs'))heroPause=false});
+let hx=null;
+document.addEventListener('touchstart',e=>{hx=e.target.closest('#hs')?e.touches[0].clientX:null},{passive:true});
+document.addEventListener('touchend',e=>{if(hx===null)return;const dx=e.changedTouches[0].clientX-hx;hx=null;if(Math.abs(dx)>40)goHero(heroIdx+(dx<0?1:-1))});
+
+document.addEventListener('input',e=>{
+  const id=e.target.id;if(id!=='oq'&&id!=='pq')return;
+  if(id==='oq')ordQ=e.target.value;else prodQ=e.target.value;
+  const pos=e.target.selectionStart;render();const i=document.getElementById(id);if(i){i.focus();i.setSelectionRange(pos,pos)}
+});
+
+/* ---------- Start: local first, then shared storage when available ---------- */
+try{const s=localStorage.getItem('eflyer-state');if(s)S=JSON.parse(s)}catch(e){}
+render();
+(async()=>{
+  try{
+    if(!window.claude||!claude.use)return;
+    const db=await claude.use('db'); if(!db)return;
+    const doc=db.doc('shop/state');
+    doc.onSnapshot(snap=>{
+      if(snap.exists){try{S=JSON.parse(snap.data().json)}catch(e){}}
+      else doc.set({json:JSON.stringify(S)}).catch(()=>{});
+      dbDoc=doc;
+      const a=document.activeElement; if(editId===null&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&$('#main').contains(a)))render();
+    },()=>{});
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
